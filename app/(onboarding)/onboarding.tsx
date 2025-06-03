@@ -3,15 +3,14 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
+import { useTripStore } from '@/store/useTripStore';
 
 const goLines = ['Barrie', 'Kitchener', 'Lakeshore East', 'Lakeshore West', 'Milton', 'Richmond Hill', 'Stouffville'];
 const barrieStations = ['Union Station', 'Downsview Park', 'Rutherford', 'Maple', 'King City', 'Aurora', 'Newmarket', 'East Gwillimbury', 'Bradford', 'Barrie South', 'Allandale Waterfront'];
 
 export default function OnboardingFlow() {
   const [step, setStep] = useState(0);
-  const [line,setLine] = useState("");
-  const [origin,setOrigin] = useState("");
-  const [destination,setDestination] = useState("");
+
   const [formData, setFormData] = useState({
     line: 'Barrie',
     origin: 'Union Station',
@@ -24,7 +23,8 @@ export default function OnboardingFlow() {
   const isLastStep = step === 2;
 
   const handleFinish = () => {
-    console.log('Form Data:', formData);
+    console.log('Form Data: ', formData);
+    useTripStore.getState().setTrip(formData);
     router.push("/(tabs)/schedule")
   };
 
