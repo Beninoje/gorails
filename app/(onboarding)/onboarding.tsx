@@ -23,8 +23,7 @@ export default function OnboardingFlow() {
   const isLastStep = step === 2;
 
   const handleFinish = () => {
-    console.log('Form Data: ', formData);
-    useTripStore.getState().setTrip(formData);
+    // useTripStore.getState().setTrip(formData);
     router.push("/(tabs)/schedule")
   };
 

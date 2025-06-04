@@ -1,5 +1,5 @@
 export type TripProps = {
-    line:string;
-    origin:string;
-    destination:string;
+    line:string | null;
+    origin:string | null;
+    destination:string | null;
 }
