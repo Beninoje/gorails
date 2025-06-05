@@ -5,16 +5,36 @@ import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import { useTripStore } from '@/store/useTripStore';
 
-const goLines = ['Barrie', 'Kitchener', 'Lakeshore East', 'Lakeshore West', 'Milton', 'Richmond Hill', 'Stouffville'];
-const barrieStations = ['Union Station', 'Downsview Park', 'Rutherford', 'Maple', 'King City', 'Aurora', 'Newmarket', 'East Gwillimbury', 'Bradford', 'Barrie South', 'Allandale Waterfront'];
+const goLines = [
+  'Barrie', 
+  'Kitchener', 
+  'Lakeshore East', 
+  'Lakeshore West', 
+  'Milton', 
+  'Richmond Hill', 
+  'Stouffville'
+];
+const barrieStations = [
+  { name: 'Union Station', code: 'UN' },
+  { name: 'Downsview Park', code: 'DW' },
+  { name: 'Rutherford', code: 'RU' },
+  { name: 'Maple', code: 'MP' },
+  { name: 'King City', code: 'KC' },
+  { name: 'Aurora', code: 'AU' },
+  { name: 'Newmarket', code: 'NE' },
+  { name: 'East Gwillimbury', code: 'EA' },
+  { name: 'Bradford', code: 'BD' },
+  { name: 'Barrie South', code: 'BA' },
+  { name: 'Allandale Waterfront', code: 'AD' },
+];
 
 export default function OnboardingFlow() {
   const [step, setStep] = useState(0);
 
   const [formData, setFormData] = useState({
-    line: 'Barrie',
-    origin: 'Union Station',
-    destination: 'Union Station',
+    line: goLines[0],
+    origin: barrieStations[0].code,
+    destination: barrieStations[0].code,
   });
 
   const next = () => setStep((prev) => prev + 1);
@@ -23,7 +43,8 @@ export default function OnboardingFlow() {
   const isLastStep = step === 2;
 
   const handleFinish = () => {
-    // useTripStore.getState().setTrip(formData);
+    useTripStore.getState().setTrip(formData);
+    console.log("Form Data: ", formData)
     router.push("/(tabs)/schedule")
   };
 
@@ -67,7 +88,7 @@ export default function OnboardingFlow() {
                 itemStyle={{ fontSize: 22, height: 500, color: 'white' }}
               >
                 {barrieStations.map((station) => (
-                  <Picker.Item key={station} label={station} value={station} color="white" />
+                  <Picker.Item key={station.name} label={station.name} value={station.code} color="white" />
                 ))}
               </Picker>
             </View>
@@ -89,7 +110,7 @@ export default function OnboardingFlow() {
                 itemStyle={{ fontSize: 22, height: 500, color: 'white' }}
               >
                 {barrieStations.map((station) => (
-                  <Picker.Item key={station} label={station} value={station} color="white" />
+                  <Picker.Item key={station.name} label={station.name} value={station.code} color="white" />
                 ))}
               </Picker>
             </View>

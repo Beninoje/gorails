@@ -52,7 +52,10 @@ export const fetchAPI = async (url: string) => {
             
             const railTrips=[];
             data.trips.forEach(trip => {
-              const railLines = trip.lines.filter(line => line.transitType === 1);
+              const railLines = trip.lines.filter(line => 
+                line.transitType === 1 &&
+                line.fromStopDisplay === 'Allandale Waterfront GO'
+              );
               
               if (railLines.length > 0) {
                 railTrips.push({
@@ -74,7 +77,6 @@ export const fetchAPI = async (url: string) => {
                 });
               }
             });
-            console.log(JSON.stringify(railTrips, null, 2));
     
             setTrainTrips(railTrips);
           } catch (error) {
