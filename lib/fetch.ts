@@ -42,9 +42,12 @@ export const fetchAPI = async (url: string) => {
   };
   export const useFetchAllRides= <T>(url:string)=>{
     const [trainTrips, setTrainTrips] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     useEffect(() => {
         const fetchTrainData = async () => {
           try {
+            setLoading(true)
             const data = await fetchAPI(url);
             
             const railTrips=[];
@@ -76,10 +79,14 @@ export const fetchAPI = async (url: string) => {
             setTrainTrips(railTrips);
           } catch (error) {
             console.error('Failed to fetch GO Train data:', error);
+            setLoading(false);
+            setError(error);
+          }finally{
+            setLoading(false)
           }
         };
     
         fetchTrainData();
       }, []);
-      return {recentRides: trainTrips}
+      return {recentRides: trainTrips, loading, error}
   }
