@@ -46,7 +46,7 @@ export const fetchAPI = async (url: string) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
      const { origin, destination } = useTripStore();
-    useEffect(() => {
+    
         const fetchTrainData = async () => {
           try {
             setLoading(true)
@@ -67,8 +67,8 @@ export const fetchAPI = async (url: string) => {
                   duration: trip.duration,
                   railLines: railLines.map(line => ({
                     tripNumber: line.tripNumber,
-                    from: line.fromStopDisplay.replace(" GO"," "),
-                    to: line.toStopDisplay.replace(" GO"," "),
+                    from: line.fromStopDisplay.replace(/ GO$/," "),
+                    to: line.toStopDisplay.replace(/ GO$/," "),
                     departure: line.fromStopTime,
                     arrival: line.toStopTime,
                     stops: line.stops.map(stop => ({
@@ -89,8 +89,8 @@ export const fetchAPI = async (url: string) => {
             setLoading(false)
           }
         };
-    
+      useEffect(() => {
         fetchTrainData();
       }, []);
-      return {recentRides: trainTrips, loading, error}
+      return {recentRides: trainTrips, loading, error, refetch: fetchTrainData}
   }

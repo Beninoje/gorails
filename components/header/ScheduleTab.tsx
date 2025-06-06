@@ -1,0 +1,33 @@
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+
+const tabs = ['Today', 'Tomorrow', 'Future'];
+
+const ScheduleTab = () => {
+  const [activeTab, setActiveTab] = useState('Today');
+
+  return (
+    <View className="w-full px-10 py-2">
+      <View className="flex-row bg-zinc-800 p-1 rounded-lg">
+        {tabs.map((tab) => {
+          const isActive = tab === activeTab;
+          return (
+            <TouchableOpacity
+              key={tab}
+              className={`flex-1 py-1 rounded-lg items-center ${
+                isActive ? 'bg-zinc-500' : ''
+              }`}
+              onPress={() => setActiveTab(tab)}
+            >
+              <Text className={`text-sm font-semibold text-white`}>
+                {tab}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    </View>
+  );
+};
+
+export default ScheduleTab;
