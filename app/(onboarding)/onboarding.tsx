@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
@@ -43,8 +43,17 @@ export default function OnboardingFlow() {
   const isLastStep = step === 2;
 
   const handleFinish = () => {
+    if(formData.origin === formData.destination)
+      {
+        Alert.alert(
+          'Error',
+          'Your origin cannot be the same as your destination',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
     useTripStore.getState().setTrip(formData);
-    console.log("Form Data: ", formData)
+    
     router.push("/(tabs)/schedule")
   };
 

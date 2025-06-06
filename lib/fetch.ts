@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { formatCurrentTime } from "./utils";
+import { useTripStore } from "@/store/useTripStore";
 
 export const fetchAPI = async (url: string) => {
     try {
@@ -44,6 +45,7 @@ export const fetchAPI = async (url: string) => {
     const [trainTrips, setTrainTrips] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+     const { origin, destination } = useTripStore();
     useEffect(() => {
         const fetchTrainData = async () => {
           try {
@@ -54,7 +56,8 @@ export const fetchAPI = async (url: string) => {
             data.trips.forEach(trip => {
               const railLines = trip.lines.filter(line => 
                 line.transitType === 1 &&
-                line.fromStopDisplay === 'Allandale Waterfront GO'
+                line.fromStopCode === origin &&
+                line.toStopCode === destination
               );
               
               if (railLines.length > 0) {
@@ -64,8 +67,8 @@ export const fetchAPI = async (url: string) => {
                   duration: trip.duration,
                   railLines: railLines.map(line => ({
                     tripNumber: line.tripNumber,
-                    from: line.fromStopDisplay.slice(0,-3),
-                    to: line.toStopDisplay,
+                    from: line.fromStopDisplay.replace(" GO"," "),
+                    to: line.toStopDisplay.replace(" GO"," "),
                     departure: line.fromStopTime,
                     arrival: line.toStopTime,
                     stops: line.stops.map(stop => ({
@@ -77,7 +80,6 @@ export const fetchAPI = async (url: string) => {
                 });
               }
             });
-    
             setTrainTrips(railTrips);
           } catch (error) {
             console.error('Failed to fetch GO Train data:', error);
