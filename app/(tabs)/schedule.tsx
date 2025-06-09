@@ -31,11 +31,13 @@ export default function ScheduleScreen() {
     }, [refetch]);
     const handleSwitchAndRefresh = () => {
       setTrip({ origin: destination, destination: origin, line });
-      refetch();
     };
+    useEffect(() => {
+      refetch();
+    }, [origin, destination]);
   return (
     <SafeAreaView className='flex-1 bg-green-700'>
-      <ScheduleHeader onSwitch={handleSwitchAndRefresh}/>
+      <ScheduleHeader onSwitch={handleSwitchAndRefresh} onRefresh={onRefresh}/>
       <View className="flex-1 bg-black ">
       <ScheduleTab/>
           <ScrollView 

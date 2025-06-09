@@ -1,13 +1,14 @@
 import { useTripStore } from '@/store/useTripStore';
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import { ArrowLeftRight } from 'lucide-react-native';
+import { ArrowLeftRight, RefreshCcw } from 'lucide-react-native';
 type Props = {
   onSwitch: () => void;
+  onRefresh: () => void;
 }
 
-const ScheduleHeader = ({onSwitch}: Props) => {
-  const { line, origin, destination, setTrip } = useTripStore();
+const ScheduleHeader = ({onSwitch,onRefresh}: Props) => {
+  const { line } = useTripStore();
 
   return (
     <View className="w-full py-3 px-8 flex-row justify-between items-center">
@@ -19,9 +20,9 @@ const ScheduleHeader = ({onSwitch}: Props) => {
       <Text className="text-white text-2xl font-bold text-center">
         {line}
       </Text>
-      <View className="text-white text-2xl font-bold text-center">
-        {line}
-      </View>
+      <TouchableOpacity onPress={onRefresh}>
+          <RefreshCcw color="white"/>
+      </TouchableOpacity>
     </View>
   )
 }
