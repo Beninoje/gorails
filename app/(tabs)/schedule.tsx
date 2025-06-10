@@ -7,10 +7,10 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import { use, useCallback, useEffect, useState } from 'react';
+import { act, use, useCallback, useEffect, useState } from 'react';
 import { useTripStore } from '@/store/useTripStore';
 import { useFetch, useFetchAllRides } from '@/lib/fetch';
-import { formatCurrentTime } from '@/lib/utils';
+import { formatCurrentTime, formatTomorrowTime } from '@/lib/utils';
 import TripCard from '@/components/TripCard';
 import ScheduleHeader from '@/components/header/ScheduleHeader';
 import LoadingScreen from '@/components/loader/LoadingScreen';
@@ -21,25 +21,40 @@ export default function ScheduleScreen() {
     
     const { origin, destination, setTrip, line } = useTripStore();
     const [refreshing, setRefreshing] = useState(false);
-    const [ onSwitch, setOnSwitch ] = useState(false)
-    const  { recentRides, error, loading, refetch } = useFetchAllRides(`https://api.gotransit.com/v2/schedules/en/timetable/all?fromStop=${origin}&toStop=${destination}&date=${formatCurrentTime()}`)
-    
+    const [ selectedDate, setSelectedDate ] = useState(formatCurrentTime() as string)
+    const  { recentRides, error, loading, refetch } = useFetchAllRides(`https://api.gotransit.com/v2/schedules/en/timetable/all?fromStop=${origin}&toStop=${destination}&date=${selectedDate}`)
+    const [activeTab, setActiveTab] = useState('Today');
+
     const onRefresh = useCallback(async () => {
       setRefreshing(true);
       await refetch();
       setRefreshing(false);
     }, [refetch]);
+
     const handleSwitchAndRefresh = () => {
       setTrip({ origin: destination, destination: origin, line });
     };
+
+    const handleHeaderTabChange = async (activeTab:string) => {
+      setActiveTab(activeTab);
+      if(activeTab === "Tomorrow")
+      {
+        setSelectedDate(formatTomorrowTime())
+      }
+      else if(activeTab === "Today")
+      {
+        setSelectedDate(formatCurrentTime())
+      }
+    }
+
     useEffect(() => {
       refetch();
-    }, [origin, destination]);
+    }, [origin, destination,selectedDate]);
   return (
     <SafeAreaView className='flex-1 bg-green-700'>
       <ScheduleHeader onSwitch={handleSwitchAndRefresh} onRefresh={onRefresh}/>
       <View className="flex-1 bg-black ">
-      <ScheduleTab/>
+      <ScheduleTab setActive={handleHeaderTabChange} activeTab={activeTab}/>
           <ScrollView 
           className="px-4" 
           contentContainerStyle={{ paddingBottom: 10}}

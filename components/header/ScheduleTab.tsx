@@ -3,8 +3,12 @@ import { View, Text, TouchableOpacity } from 'react-native';
 
 const tabs = ['Today', 'Tomorrow', 'Future'];
 
-const ScheduleTab = () => {
-  const [activeTab, setActiveTab] = useState('Today');
+type Props = {
+  setActive: (tab:string)=> void
+  activeTab:string;
+}
+
+const ScheduleTab = ({setActive,activeTab}:Props) => {
 
   return (
     <View className="w-full px-10 py-2">
@@ -17,7 +21,7 @@ const ScheduleTab = () => {
               className={`flex-1 py-1 rounded-lg items-center ${
                 isActive ? 'bg-zinc-500' : ''
               }`}
-              onPress={() => setActiveTab(tab)}
+              onPress={() => setActive(tab)}
             >
               <Text className={`text-sm font-semibold text-white`}>
                 {tab}
