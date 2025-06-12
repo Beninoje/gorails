@@ -14,14 +14,14 @@ const ScheduleHeader = ({onSwitch,onRefresh}: Props) => {
     <View className="w-full py-3 px-8 flex-row justify-between items-center">
       <View className="text-white text-2xl font-bold text-center">
         <TouchableOpacity onPress={onSwitch}>
-          <ArrowLeftRight color="white"/>
+          <ArrowLeftRight color="white" size={20}/>
         </TouchableOpacity>
       </View>
       <Text className="text-white text-2xl font-bold text-center">
         {line}
       </Text>
       <TouchableOpacity onPress={onRefresh}>
-          <RefreshCcw color="white"/>
+          <RefreshCcw color="white" size={20}/>
       </TouchableOpacity>
     </View>
   )

@@ -1,36 +1,51 @@
-import React, { useRef, useMemo } from 'react';
-import { View, Text, Button, TouchableOpacity } from 'react-native';
-import BottomSheet from '@gorhom/bottom-sheet';
+import React, { forwardRef, useMemo } from 'react';
+import { Text, Pressable, Dimensions } from 'react-native';
+import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-export default function DateDrawer() {
-  const sheetRef = useRef<BottomSheet>(null);
+export type Ref = BottomSheetModal;
 
-  const snapPoints = useMemo(() => ['25%', '50%'], []);
-
-  const handleOpen = () => sheetRef.current?.expand();
-  const handleClose = () => sheetRef.current?.close();
-
+const DateBottomSheet = forwardRef<Ref>((props, ref) => {
+  const snapPoints = useMemo(() => ['50%'], []);
+  const screenHeight = Dimensions.get('window').height;
   return (
-    <View style={{ flex: 1, padding: 24, backgroundColor: '#000', justifyContent: 'center' }}>
-      <TouchableOpacity onPress={handleOpen} >
-        <Text className='text-white'>
-        Open
-        </Text>
-        
-        </TouchableOpacity>
-
-      <BottomSheet
-        ref={sheetRef}
-        index={-1} // closed by default
-        snapPoints={snapPoints}
-        backgroundStyle={{ backgroundColor: '#111' }}
-        handleIndicatorStyle={{ backgroundColor: '#ccc' }}
-      >
-        <View style={{ padding: 16 }}>
-          <Text style={{ color: 'white', fontSize: 18, marginBottom: 8 }}>Pick a Date</Text>
-          {/* You can place Picker, Calendar, etc. here */}
-        </View>
-      </BottomSheet>
-    </View>
+    <BottomSheetModal
+      ref={ref}
+      index={0}
+      snapPoints={snapPoints}
+      enablePanDownToClose
+      enableContentPanningGesture={false}
+      enableHandlePanningGesture={false}
+      backgroundStyle={{ backgroundColor: '#18181b' }}
+      handleIndicatorStyle={{ backgroundColor: '#ccc' }}
+      backdropComponent={(props) => (
+        <BottomSheetBackdrop
+          {...props}
+          disappearsOnIndex={-1}
+          appearsOnIndex={1}
+          pressBehavior="close"
+          style={{ backgroundColor: 'rgba(0,0,0,1)', marginTop: '13%' }}
+        />
+      )}
+    >
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <BottomSheetView 
+          style={{
+            padding: 24,
+            minHeight: screenHeight * 0.5,
+          }}>
+          <Text style={{ color: 'white', fontSize: 18, fontWeight: '600', marginBottom: 16 }}>
+            Select your future date
+          </Text>
+          <Pressable style={{ marginTop: 16, backgroundColor: '#15803d', paddingVertical: 10, borderRadius: 8 }}>
+            <Text style={{ color: 'white', fontSize: 16, fontWeight: '600', textAlign: 'center' }}>
+              View Dates
+            </Text>
+          </Pressable>
+        </BottomSheetView>
+      </GestureHandlerRootView>
+    </BottomSheetModal>
   );
-}
+});
+
+export default DateBottomSheet;

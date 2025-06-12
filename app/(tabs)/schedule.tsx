@@ -7,7 +7,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import { act, use, useCallback, useEffect, useState } from 'react';
+import { act, use, useCallback, useEffect, useRef, useState } from 'react';
 import { useTripStore } from '@/store/useTripStore';
 import { useFetch, useFetchAllRides } from '@/lib/fetch';
 import { formatCurrentTime, formatTomorrowTime } from '@/lib/utils';
@@ -16,11 +16,16 @@ import ScheduleHeader from '@/components/header/ScheduleHeader';
 import LoadingScreen from '@/components/loader/LoadingScreen';
 import ScheduleTab from '@/components/header/ScheduleTab';
 import DateDrawer from '@/components/DateDrawer';
+import DateBottomSheet from '@/components/DateDrawer';
+import { BottomSheetModal, useBottomSheetModal } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function ScheduleScreen() {
     
     const { origin, destination, setTrip, line } = useTripStore();
     const [refreshing, setRefreshing] = useState(false);
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const { dismiss } =useBottomSheetModal();
     const [ selectedDate, setSelectedDate ] = useState(formatCurrentTime() as string)
     const  { recentRides, error, loading, refetch } = useFetchAllRides(`https://api.gotransit.com/v2/schedules/en/timetable/all?fromStop=${origin}&toStop=${destination}&date=${selectedDate}`)
     const [activeTab, setActiveTab] = useState('Today');
@@ -39,11 +44,15 @@ export default function ScheduleScreen() {
       setActiveTab(activeTab);
       if(activeTab === "Tomorrow")
       {
-        setSelectedDate(formatTomorrowTime())
+        setSelectedDate(formatTomorrowTime());
       }
       else if(activeTab === "Today")
       {
-        setSelectedDate(formatCurrentTime())
+        setSelectedDate(formatCurrentTime());
+      }
+      else
+      {
+        bottomSheetRef.current?.present();
       }
     }
 
@@ -51,6 +60,7 @@ export default function ScheduleScreen() {
       refetch();
     }, [origin, destination,selectedDate]);
   return (
+
     <SafeAreaView className='flex-1 bg-green-700'>
       <ScheduleHeader onSwitch={handleSwitchAndRefresh} onRefresh={onRefresh}/>
       <View className="flex-1 bg-black ">
@@ -80,8 +90,11 @@ export default function ScheduleScreen() {
             )}
           </ScrollView>
       </View>
+      <DateBottomSheet ref={bottomSheetRef} />
       
     </SafeAreaView>
+
+    
   );
 }
 
