@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Platform, SafeAreaView, StyleSheet } from 'react-native';
+import { Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -7,11 +7,60 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import NormalHeader from '@/components/header/NormalHeader';
+import { useTripStore } from '@/store/useTripStore';
+import { ArrowRight, ChevronRight, Icon } from 'lucide-react-native';
 
 export default function SettingsScreen() {
+  const { origin, destination, setTrip, line } = useTripStore();
   return (
-    <SafeAreaView className='flex-1 bg-black p-6'>
+    <SafeAreaView className='flex-1 bg-green-700'>
+      <NormalHeader label='Settings'/>
+      <View className="flex-1 bg-black ">
+        <View className='py-6'>
+          <Text className='text-zinc-400 uppercase px-6'>Current Schedule</Text>
+          <View className='bg-zinc-800 mt-2'>
+           {/*======== LINE ========*/}
+          <View className=''>
+            <TouchableOpacity className='w-full px-6 py-3 flex-row items-center justify-between'>
+              <Text className='text-white text-xl'>Line</Text>
+              <View className='flex-row items-center gap-2'>
+                <Text className='text-zinc-100 text-lg'>{line}</Text>
+                <ChevronRight color="#a1a1aa" size={20} />
+              </View>
+            </TouchableOpacity>
+          </View>
 
+          {/*======== ORIGIN ========*/}
+          <View className='border-t border-zinc-700 '>
+            <TouchableOpacity className='w-full flex-row items-center px-6 py-3 justify-between'>
+              <Text className='text-white text-xl'>Origin</Text>
+              <View className='flex-row items-center gap-2'>
+                <Text className='text-zinc-100 text-lg'>{origin}</Text>
+                <ChevronRight color="#a1a1aa" size={20} />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {/*======== DESTINATION ========*/}
+          <View className='border-t border-zinc-700 '>
+            <TouchableOpacity className='w-full flex-row items-center px-6 py-3 justify-between'>
+              <Text className='text-white text-xl'>Destination</Text>
+              <View className='flex-row items-center gap-2'>
+                <Text className='text-zinc-100 text-lg'>{destination}</Text>
+                <ChevronRight color="#a1a1aa" size={20} />
+              </View>
+            </TouchableOpacity>
+          </View>
+          </View>
+        </View>
+          
+          
+          
+      </View>
+      
+      
+      
     </SafeAreaView>
   );
 }

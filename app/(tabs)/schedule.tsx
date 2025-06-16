@@ -39,7 +39,7 @@ export default function ScheduleScreen() {
           setSelectedDate(formatCurrentTime());
           break;
         case "Future":
-          setSelectedDate(""); // clear it first, so the tab shows "Future"
+          setSelectedDate(""); 
           dateSheetRef.current?.open();
           break;
       }
