@@ -19,9 +19,11 @@ import DateDrawer from '@/components/DateDrawer';
 import DateBottomSheet from '@/components/DateDrawer';
 import { BottomSheetModal, useBottomSheetModal } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import DatePickerModal from '@/components/DateDrawer';
+import { Picker } from '@react-native-picker/picker';
 
 export default function ScheduleScreen() {
-    
+
     const { origin, destination, setTrip, line } = useTripStore();
     const [refreshing, setRefreshing] = useState(false);
     const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -29,7 +31,8 @@ export default function ScheduleScreen() {
     const [ selectedDate, setSelectedDate ] = useState(formatCurrentTime() as string)
     const  { recentRides, error, loading, refetch } = useFetchAllRides(`https://api.gotransit.com/v2/schedules/en/timetable/all?fromStop=${origin}&toStop=${destination}&date=${selectedDate}`)
     const [activeTab, setActiveTab] = useState('Today');
-
+    const dateSheetRef = useRef<DateSheetRef>(null);
+    
     const onRefresh = useCallback(async () => {
       setRefreshing(true);
       await refetch();
@@ -52,9 +55,10 @@ export default function ScheduleScreen() {
       }
       else
       {
-        bottomSheetRef.current?.present();
+        dateSheetRef.current?.open()
       }
     }
+  
 
     useEffect(() => {
       refetch();
@@ -89,9 +93,12 @@ export default function ScheduleScreen() {
               ))
             )}
           </ScrollView>
+          
+          
       </View>
-      <DateBottomSheet ref={bottomSheetRef} />
       
+      
+      <DateBottomSheet ref={dateSheetRef} />
     </SafeAreaView>
 
     
