@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useRef, useImperativeHandle, useEffect } from 'react';
+import React, { forwardRef, useState, useRef, useImperativeHandle } from 'react';
 import { 
   Text, 
   Pressable, 
@@ -6,7 +6,8 @@ import {
   View, 
   Animated, 
   TouchableWithoutFeedback,
-  Platform
+  Platform,
+  Modal
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
@@ -95,33 +96,35 @@ const DateBottomSheet = forwardRef<Ref>((props, ref) => {
     setFormData(prev => ({ ...prev, year: value }));
   };
 
-  if (!isVisible) return null;
-
   return (
-    <>
-      {/* Backdrop */}
+    <Modal
+      visible={isVisible}
+      transparent={true}
+      animationType="none"
+      onRequestClose={() => ref?.current?.close?.()}
+    >
+      {/* Backdrop with high z-index */}
       <TouchableWithoutFeedback onPress={handleBackdropPress}>
         <Animated.View 
-          className="absolute top-0 left-0 right-0 bottom-0 bg-black"
+          className="absolute top-0 left-0 right-0 bottom-0 bg-black z-10"
           style={{ opacity: backdropOpacity }}
         />
       </TouchableWithoutFeedback>
       
-      {/* Bottom Sheet */}
+      {/* Bottom Sheet with higher z-index */}
       <Animated.View 
-        className="absolute bottom-0 left-0 right-0 bg-zinc-900 rounded-t-2xl overflow-hidden"
+        className="absolute bottom-0 left-0 right-0 bg-zinc-900 rounded-t-2xl overflow-hidden z-20"
         style={{ 
           height: BOTTOM_SHEET_HEIGHT,
           transform: [{ translateY }]
         }}
       >
+
         
         <View className="p-4 flex-1">
           
-          {/* Dual Picker Container */}
-          <View className="flex-row justify-between h-[75%] bg-red-500 mb-4">
-            {/* Month Picker */}
-            <View className="w-[50%] h-full overflow-hidden bg-zinc-900">
+          <View className="flex-row justify-between h-[70%] mb-4">
+            <View className="w-1/2 h-full rounded-xl overflow-hidden bg-zinc-900">
               <Picker
                 selectedValue={formData.month}
                 onValueChange={handleMonthChange}
@@ -146,7 +149,7 @@ const DateBottomSheet = forwardRef<Ref>((props, ref) => {
             </View>
             
             {/* Year Picker */}
-            <View className="w-[50%] h-full overflow-hidden bg-zinc-900">
+            <View className="w-1/2 h-full rounded-xl overflow-hidden bg-zinc-900">
               <Picker
                 selectedValue={formData.year}
                 onValueChange={handleYearChange}
@@ -185,7 +188,7 @@ const DateBottomSheet = forwardRef<Ref>((props, ref) => {
           </Pressable>
         </View>
       </Animated.View>
-    </>
+    </Modal>
   );
 });
 
