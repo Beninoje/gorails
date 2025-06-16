@@ -1,35 +1,21 @@
 import { Image } from 'expo-image';
 import { ActivityIndicator, FlatList, Platform, Pressable, RefreshControl, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
-
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import { act, use, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTripStore } from '@/store/useTripStore';
-import { useFetch, useFetchAllRides } from '@/lib/fetch';
+import { useFetchAllRides } from '@/lib/fetch';
 import { formatCurrentTime, formatTomorrowTime } from '@/lib/utils';
 import TripCard from '@/components/TripCard';
 import ScheduleHeader from '@/components/header/ScheduleHeader';
 import LoadingScreen from '@/components/loader/LoadingScreen';
 import ScheduleTab from '@/components/header/ScheduleTab';
-import DateDrawer from '@/components/DateDrawer';
 import DateBottomSheet from '@/components/DateDrawer';
-import { BottomSheetModal, useBottomSheetModal } from '@gorhom/bottom-sheet';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import DatePickerModal from '@/components/DateDrawer';
-import { Picker } from '@react-native-picker/picker';
 
 export default function ScheduleScreen() {
 
     const { origin, destination, setTrip, line } = useTripStore();
     const [refreshing, setRefreshing] = useState(false);
-    const bottomSheetRef = useRef<BottomSheetModal>(null);
-    const { dismiss } =useBottomSheetModal();
     const [ selectedDate, setSelectedDate ] = useState(formatCurrentTime() as string)
-    const  { recentRides, error, loading, refetch } = useFetchAllRides(`https://api.gotransit.com/v2/schedules/en/timetable/all?fromStop=${origin}&toStop=${destination}&date=${selectedDate}`)
+    const { recentRides, error, loading, refetch } = useFetchAllRides(`https://api.gotransit.com/v2/schedules/en/timetable/all?fromStop=${origin}&toStop=${destination}&date=${selectedDate}`)
     const [activeTab, setActiveTab] = useState('Today');
     const dateSheetRef = useRef<DateSheetRef>(null);
     
@@ -45,17 +31,17 @@ export default function ScheduleScreen() {
 
     const handleHeaderTabChange = async (activeTab:string) => {
       setActiveTab(activeTab);
-      if(activeTab === "Tomorrow")
-      {
-        setSelectedDate(formatTomorrowTime());
-      }
-      else if(activeTab === "Today")
-      {
-        setSelectedDate(formatCurrentTime());
-      }
-      else
-      {
-        dateSheetRef.current?.open()
+      switch (activeTab) {
+        case "Tomorrow":
+          setSelectedDate(formatTomorrowTime());
+          break;
+        case "Today":
+          setSelectedDate(formatCurrentTime());
+          break;
+        case "Future":
+          setSelectedDate(""); // clear it first, so the tab shows "Future"
+          dateSheetRef.current?.open();
+          break;
       }
     }
   
@@ -68,7 +54,7 @@ export default function ScheduleScreen() {
     <SafeAreaView className='flex-1 bg-green-700'>
       <ScheduleHeader onSwitch={handleSwitchAndRefresh} onRefresh={onRefresh}/>
       <View className="flex-1 bg-black ">
-      <ScheduleTab setActive={handleHeaderTabChange} activeTab={activeTab}/>
+      <ScheduleTab setActive={handleHeaderTabChange} activeTab={activeTab} selectedDate={selectedDate}/>
           <ScrollView 
           className="px-4" 
           contentContainerStyle={{ paddingBottom: 10}}
@@ -98,7 +84,7 @@ export default function ScheduleScreen() {
       </View>
       
       
-      <DateBottomSheet ref={dateSheetRef} />
+      <DateBottomSheet ref={dateSheetRef} onSelectDate={setSelectedDate} />
     </SafeAreaView>
 
     

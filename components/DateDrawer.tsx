@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useRef, useImperativeHandle } from 'react';
+import React, { forwardRef, useState, useRef, useImperativeHandle, useMemo } from 'react';
 import { 
   Text, 
   Pressable, 
@@ -14,6 +14,9 @@ import { Picker } from '@react-native-picker/picker';
 export type Ref = {
   open: () => void;
   close: () => void;
+};
+type Props = {
+  onSelectDate: (date: string) => void;
 };
 
 const months = [
@@ -34,21 +37,29 @@ const months = [
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const BOTTOM_SHEET_HEIGHT = SCREEN_HEIGHT * 0.4;
 
-const DateBottomSheet = forwardRef<Ref>((props, ref) => {
+const DateBottomSheet = forwardRef<Ref,Props>(({onSelectDate}, ref) => {
   const [isVisible, setIsVisible] = useState(false);
+  const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
   const [formData, setFormData] = useState({
-    month: months[0].code,
-    year: new Date().getFullYear().toString()
+    year:new Date().getFullYear(),
+    month: currentMonth,
+    days: new Date().getDate().toString().padStart(2, '0')
   });
   
   const translateY = useRef(new Animated.Value(BOTTOM_SHEET_HEIGHT)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
+
+  const daysInMonth = useMemo(() => {
+    const monthIndex = months.findIndex(m => m.code === formData.month);
+    const year = new Date().getFullYear();
+    return new Date(year, monthIndex + 1, 0).getDate();
+  }, [formData.month]);
   
-  // Generate years (current year to next 5 years)
-  const years = Array.from({ length: 6 }, (_, i) => {
-    const year = new Date().getFullYear() + i;
-    return year.toString();
-  });
+  // Generate days array (1 to daysInMonth)
+  const days = Array.from({ length: daysInMonth }, (_, i) => 
+    (i + 1).toString()
+  );
+
   
   // Expose open/close methods via ref
   useImperativeHandle(ref, () => ({
@@ -88,22 +99,26 @@ const DateBottomSheet = forwardRef<Ref>((props, ref) => {
     ref?.current?.close();
   };
   
-  const handleMonthChange = (value: string) => {
-    setFormData(prev => ({ ...prev, month: value }));
+  const handleMonthChange = (value:any) => {
+    if (parseInt(formData.days) > daysInMonth) {
+      setFormData({ ...formData, month: value, days: '1' });
+    } else {
+      setFormData({ ...formData, month: value });
+    }
   };
   
-  const handleYearChange = (value: string) => {
-    setFormData(prev => ({ ...prev, year: value }));
-  };
-
   return (
     <Modal
       visible={isVisible}
       transparent={true}
       animationType="none"
-      onRequestClose={() => ref?.current?.close?.()}
+      onRequestClose={() => {
+        // @ts-ignore
+          ref?.current?.close?.()
+        }
+      }
     >
-      {/* Backdrop with high z-index */}
+
       <TouchableWithoutFeedback onPress={handleBackdropPress}>
         <Animated.View 
           className="absolute top-0 left-0 right-0 bottom-0 bg-black z-10"
@@ -111,7 +126,6 @@ const DateBottomSheet = forwardRef<Ref>((props, ref) => {
         />
       </TouchableWithoutFeedback>
       
-      {/* Bottom Sheet with higher z-index */}
       <Animated.View 
         className="absolute bottom-0 left-0 right-0 bg-zinc-900 rounded-t-2xl overflow-hidden z-20"
         style={{ 
@@ -126,7 +140,7 @@ const DateBottomSheet = forwardRef<Ref>((props, ref) => {
           <View className="flex-row justify-between h-[70%] mb-4">
             <View className="w-1/2 h-full rounded-xl overflow-hidden bg-zinc-900">
               <Picker
-                selectedValue={formData.month}
+                selectedValue={currentMonth}
                 onValueChange={handleMonthChange}
                 className="text-white h-full"
                 dropdownIconColor="#fff"
@@ -134,31 +148,27 @@ const DateBottomSheet = forwardRef<Ref>((props, ref) => {
                 itemStyle={{ height: 250 }}
               >
                 {months.map((item) => (
-                  <Picker.Item 
-                    key={item.code} 
-                    label={item.name} 
-                    value={item.code}
-                    color="#fff"
-                    style={{
-                      fontSize: 16,
-                      height: Platform.OS === 'ios' ? 100 : 50
-                    }} 
-                  />
-                ))}
+                <Picker.Item 
+                  key={item.code} 
+                  label={item.code === currentMonth ? `${item.name}` : item.name}
+                  value={item.code}
+                  enabled={item.code === currentMonth} // Disable non-current months
+                  color={item.code === currentMonth ? '#fff' : '#666'} // Gray out disabled
+                />
+              ))}
               </Picker>
             </View>
             
-            {/* Year Picker */}
             <View className="w-1/2 h-full rounded-xl overflow-hidden bg-zinc-900">
               <Picker
-                selectedValue={formData.year}
-                onValueChange={handleYearChange}
+                selectedValue={formData.days}
+                onValueChange={(value) => setFormData({ ...formData, days: value })}
                 className="text-white h-full"
                 dropdownIconColor="#fff"
                 mode="dropdown"
                 itemStyle={{ height: 250 }}
               >
-                {years.map((year) => (
+                {days.map((year) => (
                   <Picker.Item 
                     key={year} 
                     label={year} 
@@ -177,7 +187,9 @@ const DateBottomSheet = forwardRef<Ref>((props, ref) => {
           <Pressable
             className="mt-4 bg-green-700 py-3.5 rounded-lg"
             onPress={() => {
-              console.log("Selected date:", formData.month, formData.year);
+              const dateStr = `${formData.year}-${formData.month}-${formData.days}`;
+              console.log("Selected date:", `${formData.year}-${formData.month}-${formData.days}`);
+              onSelectDate?.(dateStr);
               // @ts-ignore
               ref?.current?.close();
             }}
