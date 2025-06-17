@@ -10,9 +10,10 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import NormalHeader from '@/components/header/NormalHeader';
 import { useTripStore } from '@/store/useTripStore';
 import { ArrowRight, ChevronRight, Icon } from 'lucide-react-native';
+import { router } from 'expo-router';
 
 export default function SettingsScreen() {
-  const { origin, destination, setTrip, line } = useTripStore();
+  const { setTrip, line, originName,destinationName } = useTripStore();
   return (
     <SafeAreaView className='flex-1 bg-green-700'>
       <NormalHeader label='Settings'/>
@@ -22,7 +23,9 @@ export default function SettingsScreen() {
           <View className='bg-zinc-800 mt-2'>
            {/*======== LINE ========*/}
           <View className=''>
-            <TouchableOpacity className='w-full px-6 py-3 flex-row items-center justify-between'>
+            <TouchableOpacity 
+            className='w-full flex-row items-center px-6 py-3 justify-between'
+            onPress={()=> router.push('/(tabs)/settings/change-line')}>
               <Text className='text-white text-xl'>Line</Text>
               <View className='flex-row items-center gap-2'>
                 <Text className='text-zinc-100 text-lg'>{line}</Text>
@@ -33,10 +36,12 @@ export default function SettingsScreen() {
 
           {/*======== ORIGIN ========*/}
           <View className='border-t border-zinc-700 '>
-            <TouchableOpacity className='w-full flex-row items-center px-6 py-3 justify-between'>
+            <TouchableOpacity 
+            className='w-full flex-row items-center px-6 py-3 justify-between'
+            onPress={()=> router.push('/(tabs)/settings/change-origin')}>
               <Text className='text-white text-xl'>Origin</Text>
               <View className='flex-row items-center gap-2'>
-                <Text className='text-zinc-100 text-lg'>{origin}</Text>
+                <Text className='text-zinc-100 text-lg'>{originName}</Text>
                 <ChevronRight color="#a1a1aa" size={20} />
               </View>
             </TouchableOpacity>
@@ -44,10 +49,12 @@ export default function SettingsScreen() {
 
           {/*======== DESTINATION ========*/}
           <View className='border-t border-zinc-700 '>
-            <TouchableOpacity className='w-full flex-row items-center px-6 py-3 justify-between'>
+            <TouchableOpacity 
+            className='w-full flex-row items-center px-6 py-3 justify-between'
+            onPress={()=> router.push('/(tabs)/settings/change-destination')}>
               <Text className='text-white text-xl'>Destination</Text>
               <View className='flex-row items-center gap-2'>
-                <Text className='text-zinc-100 text-lg'>{destination}</Text>
+                <Text className='text-zinc-100 text-lg'>{destinationName}</Text>
                 <ChevronRight color="#a1a1aa" size={20} />
               </View>
             </TouchableOpacity>

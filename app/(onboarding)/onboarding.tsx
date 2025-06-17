@@ -34,7 +34,9 @@ export default function OnboardingFlow() {
   const [formData, setFormData] = useState({
     line: goLines[0],
     origin: barrieStations[0].code,
+    originName:barrieStations[0].name,
     destination: barrieStations[0].code,
+    destinationName: barrieStations[0].name,
   });
 
   const next = () => setStep((prev) => prev + 1);
@@ -71,7 +73,9 @@ export default function OnboardingFlow() {
             <View className="flex-1 justify-center">
               <Picker
                 selectedValue={formData.line}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, line: value }))}
+                onValueChange={
+                  (value) => setFormData((prev) => ({ ...prev, line: value }))
+                }
                 itemStyle={{ fontSize: 22, height: 500, color: 'white' }}
               >
                 {goLines.map((line) => (
@@ -93,7 +97,16 @@ export default function OnboardingFlow() {
             <View className="flex-1 justify-center">
               <Picker
                 selectedValue={formData.origin}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, origin: value }))}
+                onValueChange={(value) => {
+                  const selected = barrieStations.find((station) => station.code === value);
+                  if (selected) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      origin: selected.code,
+                      originName: selected.name,
+                    }));
+                  }
+                }}
                 itemStyle={{ fontSize: 22, height: 500, color: 'white' }}
               >
                 {barrieStations.map((station) => (
@@ -115,7 +128,16 @@ export default function OnboardingFlow() {
             <View className="flex-1 justify-center">
               <Picker
                 selectedValue={formData.destination}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, destination: value }))}
+                onValueChange={(value) => {
+                  const selected = barrieStations.find((station) => station.code === value);
+                  if (selected) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      destination: selected.code,
+                      destinationName: selected.name,
+                    }));
+                  }
+                }}
                 itemStyle={{ fontSize: 22, height: 500, color: 'white' }}
               >
                 {barrieStations.map((station) => (
