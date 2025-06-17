@@ -5,7 +5,7 @@ import { StatusBar } from 'react-native';
 export default function SettingsLayout() {
   return (
     <>
-      <StatusBar barStyle="light-content" backgroundColor="#15803d" /> {/* bg-green-700 */}
+      <StatusBar barStyle="light-content" backgroundColor="#15803d" /> 
       <Stack>
         <Stack.Screen
           name="index"
@@ -15,8 +15,8 @@ export default function SettingsLayout() {
           name="change-destination"
           options={{
             title: 'Change Destination',
-            headerStyle: { backgroundColor: '#15803d' }, // Tailwind's bg-green-700
-            headerTintColor: '#ffffff', // White back arrow and text
+            headerStyle: { backgroundColor: '#15803d' }, 
+            headerTintColor: '#ffffff', 
           }}
         />
         <Stack.Screen
