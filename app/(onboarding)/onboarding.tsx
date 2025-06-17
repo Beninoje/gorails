@@ -4,40 +4,32 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import { useTripStore } from '@/store/useTripStore';
+import { GOLINES, STATION_BY_LINE } from '@/lib/utils';
 
-const goLines = [
-  'Barrie', 
-  'Kitchener', 
-  'Lakeshore East', 
-  'Lakeshore West', 
-  'Milton', 
-  'Richmond Hill', 
-  'Stouffville'
-];
-const barrieStations = [
-  { name: 'Union Station', code: 'UN' },
-  { name: 'Downsview Park', code: 'DW' },
-  { name: 'Rutherford', code: 'RU' },
-  { name: 'Maple', code: 'MP' },
-  { name: 'King City', code: 'KC' },
-  { name: 'Aurora', code: 'AU' },
-  { name: 'Newmarket', code: 'NE' },
-  { name: 'East Gwillimbury', code: 'EA' },
-  { name: 'Bradford', code: 'BD' },
-  { name: 'Barrie South', code: 'BA' },
-  { name: 'Allandale Waterfront', code: 'AD' },
-];
+
+type GoLine = keyof typeof STATION_BY_LINE;
 
 export default function OnboardingFlow() {
   const [step, setStep] = useState(0);
-
-  const [formData, setFormData] = useState({
-    line: goLines[0],
-    origin: barrieStations[0].code,
-    originName:barrieStations[0].name,
-    destination: barrieStations[0].code,
-    destinationName: barrieStations[0].name,
+  const [formData, setFormData] = useState<{
+    line: GoLine;
+    origin: string;
+    originName: string;
+    destination: string;
+    destinationName: string;
+  }>(() => {
+    const initialLine = GOLINES[0] as GoLine;
+    const initialStations = STATION_BY_LINE[initialLine];
+    return {
+      line: initialLine,
+      origin: initialStations[0].code,
+      originName: initialStations[0].name,
+      destination: initialStations[0].code,
+      destinationName: initialStations[0].name,
+    };
   });
+  const currentStations = STATION_BY_LINE[formData.line] || [];
+
 
   const next = () => setStep((prev) => prev + 1);
   const back = () => setStep((prev) => Math.max(prev - 1, 0));
@@ -73,12 +65,20 @@ export default function OnboardingFlow() {
             <View className="flex-1 justify-center">
               <Picker
                 selectedValue={formData.line}
-                onValueChange={
-                  (value) => setFormData((prev) => ({ ...prev, line: value }))
-                }
+                onValueChange={(value) => {
+                  const stations = STATION_BY_LINE[value];
+                  setFormData((prev) => ({
+                    ...prev,
+                    line: value,
+                    origin: stations[0].code,
+                    originName: stations[0].name,
+                    destination: stations[0].code,
+                    destinationName: stations[0].name,
+                  }));
+                }}
                 itemStyle={{ fontSize: 22, height: 500, color: 'white' }}
               >
-                {goLines.map((line) => (
+                {GOLINES.map((line) => (
                   <Picker.Item key={line} label={line} value={line} color="white" />
                 ))}
               </Picker>
@@ -98,7 +98,7 @@ export default function OnboardingFlow() {
               <Picker
                 selectedValue={formData.origin}
                 onValueChange={(value) => {
-                  const selected = barrieStations.find((station) => station.code === value);
+                  const selected = currentStations.find((station) => station.code === value);
                   if (selected) {
                     setFormData((prev) => ({
                       ...prev,
@@ -109,7 +109,7 @@ export default function OnboardingFlow() {
                 }}
                 itemStyle={{ fontSize: 22, height: 500, color: 'white' }}
               >
-                {barrieStations.map((station) => (
+                {currentStations.map((station) => (
                   <Picker.Item key={station.name} label={station.name} value={station.code} color="white" />
                 ))}
               </Picker>
@@ -129,7 +129,7 @@ export default function OnboardingFlow() {
               <Picker
                 selectedValue={formData.destination}
                 onValueChange={(value) => {
-                  const selected = barrieStations.find((station) => station.code === value);
+                  const selected = currentStations.find((station) => station.code === value);
                   if (selected) {
                     setFormData((prev) => ({
                       ...prev,
@@ -140,7 +140,7 @@ export default function OnboardingFlow() {
                 }}
                 itemStyle={{ fontSize: 22, height: 500, color: 'white' }}
               >
-                {barrieStations.map((station) => (
+                {currentStations.map((station) => (
                   <Picker.Item key={station.name} label={station.name} value={station.code} color="white" />
                 ))}
               </Picker>
