@@ -45,6 +45,10 @@ export default function ScheduleScreen() {
       }
     }
   
+    const handleCancelDateSelection = () => {
+      setActiveTab("Today"); 
+      setSelectedDate(formatCurrentTime());
+    };
 
     useEffect(() => {
       refetch();
@@ -84,7 +88,7 @@ export default function ScheduleScreen() {
       </View>
       
       
-      <DateBottomSheet ref={dateSheetRef} onSelectDate={setSelectedDate} />
+      <DateBottomSheet ref={dateSheetRef} onSelectDate={setSelectedDate} onCancel={handleCancelDateSelection}/>
     </SafeAreaView>
 
     

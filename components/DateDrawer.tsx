@@ -17,6 +17,8 @@ export type Ref = {
 };
 type Props = {
   onSelectDate: (date: string) => void;
+
+  onCancel?: () => void;
 };
 
 const months = [
@@ -37,11 +39,9 @@ const months = [
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const BOTTOM_SHEET_HEIGHT = SCREEN_HEIGHT * 0.4;
 
-const DateBottomSheet = forwardRef<Ref,Props>(({onSelectDate}, ref) => {
+const DateBottomSheet = forwardRef<Ref,Props>(({onSelectDate,onCancel}, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
-  const currentMonthName = months.find(m => m.code === currentMonth)?.name || '';
-
   const [formData, setFormData] = useState({
     year:new Date().getFullYear(),
     month: currentMonth,
@@ -99,6 +99,8 @@ const DateBottomSheet = forwardRef<Ref,Props>(({onSelectDate}, ref) => {
   const handleBackdropPress = () => {
     // @ts-ignore
     ref?.current?.close();
+    
+    onCancel?.();
   };
   
   const handleMonthChange = (value: string) => {
@@ -197,7 +199,6 @@ const DateBottomSheet = forwardRef<Ref,Props>(({onSelectDate}, ref) => {
             className="mt-4 bg-green-700 py-3.5 rounded-lg"
             onPress={() => {
               const dateStr = `${formData.year}-${formData.month}-${formData.days}`;
-              console.log("Selected date:", `${formData.year}-${formData.month}-${formData.days}`);
               onSelectDate?.(dateStr);
               // @ts-ignore
               ref?.current?.close();
