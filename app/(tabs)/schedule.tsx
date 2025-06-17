@@ -77,7 +77,7 @@ export default function ScheduleScreen() {
               recentRides.map((ride, i) => (
                 <View key={i} className="bg-zinc-900 mb-4 rounded-xl">
                   {ride.railLines.map((trip, j) => (
-                    <TripCard key={j} trip={trip} />
+                    <TripCard key={j} trip={trip} stops={trip.stops} />
                   ))}
                 </View>
               ))
