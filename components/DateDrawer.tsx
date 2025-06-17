@@ -40,6 +40,8 @@ const BOTTOM_SHEET_HEIGHT = SCREEN_HEIGHT * 0.4;
 const DateBottomSheet = forwardRef<Ref,Props>(({onSelectDate}, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
+  const currentMonthName = months.find(m => m.code === currentMonth)?.name || '';
+
   const [formData, setFormData] = useState({
     year:new Date().getFullYear(),
     month: currentMonth,
@@ -99,11 +101,17 @@ const DateBottomSheet = forwardRef<Ref,Props>(({onSelectDate}, ref) => {
     ref?.current?.close();
   };
   
-  const handleMonthChange = (value:any) => {
-    if (parseInt(formData.days) > daysInMonth) {
-      setFormData({ ...formData, month: value, days: '1' });
+  const handleMonthChange = (value: string) => {
+    // Only allow selecting the current month:
+    if (value === currentMonth) {
+      // If the selected day > daysInMonth for new month, reset day to '1'
+      if (parseInt(formData.days) > daysInMonth) {
+        setFormData({ ...formData, month: value, days: '1' });
+      } else {
+        setFormData({ ...formData, month: value });
+      }
     } else {
-      setFormData({ ...formData, month: value });
+      // Ignore the change - do nothing (month stays currentMonth)
     }
   };
   
@@ -140,7 +148,7 @@ const DateBottomSheet = forwardRef<Ref,Props>(({onSelectDate}, ref) => {
           <View className="flex-row justify-between h-[70%] mb-4">
             <View className="w-1/2 h-full rounded-xl overflow-hidden bg-zinc-900">
               <Picker
-                selectedValue={currentMonth}
+                selectedValue={formData.month}
                 onValueChange={handleMonthChange}
                 className="text-white h-full"
                 dropdownIconColor="#fff"
@@ -148,14 +156,14 @@ const DateBottomSheet = forwardRef<Ref,Props>(({onSelectDate}, ref) => {
                 itemStyle={{ height: 250 }}
               >
                 {months.map((item) => (
-                <Picker.Item 
-                  key={item.code} 
-                  label={item.code === currentMonth ? `${item.name}` : item.name}
-                  value={item.code}
-                  enabled={item.code === currentMonth} // Disable non-current months
-                  color={item.code === currentMonth ? '#fff' : '#666'} // Gray out disabled
-                />
-              ))}
+                  <Picker.Item 
+                    key={item.code} 
+                    label={item.name}
+                    value={item.code}
+                    enabled={item.code === currentMonth}  // only current month enabled
+                    color={item.code === currentMonth ? '#fff' : '#666'}  // gray out disabled
+                  />
+                ))}
               </Picker>
             </View>
             
@@ -167,6 +175,7 @@ const DateBottomSheet = forwardRef<Ref,Props>(({onSelectDate}, ref) => {
                 dropdownIconColor="#fff"
                 mode="dropdown"
                 itemStyle={{ height: 250 }}
+                
               >
                 {days.map((year) => (
                   <Picker.Item 
