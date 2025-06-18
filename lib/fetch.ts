@@ -26,7 +26,6 @@ export const fetchAPI = async (url: string) => {
   
       try {
         const result = await fetchAPI(url);
-
         setData(result.data);
       } catch (err) {
         setError((err as Error).message);
@@ -52,7 +51,7 @@ export const fetchAPI = async (url: string) => {
             setLoading(true)
             const data = await fetchAPI(url);
             
-            const railTrips=[];
+            const railTrips=[] as any;
             data.trips.forEach(trip => {
               const railLines = trip.lines.filter(line => 
                 line.transitType === 1 &&
@@ -84,7 +83,7 @@ export const fetchAPI = async (url: string) => {
           } catch (error) {
             console.error('Failed to fetch GO Train data:', error);
             setLoading(false);
-            setError(error);
+            setError(error as string);
           }finally{
             setLoading(false)
           }
@@ -93,4 +92,31 @@ export const fetchAPI = async (url: string) => {
         fetchTrainData();
       }, []);
       return {recentRides: trainTrips, loading, error, refetch: fetchTrainData}
+  }
+  export const useFetchAllAlerts =<T>(url:string)=>{
+    const [alertData, setAlertData]= useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const fetchAlertData = async() => {
+      try {
+        setLoading(true);
+        const data = await  fetchAPI(url);
+        const trains = data.Trains?.Train ?? [];
+        setAlertData(trains);
+
+      } catch (error) {
+        console.error('Failed to fetch GO Train data:', error);
+        setLoading(false);
+        setError(error as string);
+      }finally{
+        setLoading(false)
+      }
+    }
+    const delayCount = alertData.filter((alert) =>
+      alert.Status !== "On-Time" || alert.SaagNotifications?.SaagNotification?.length > 0
+    ).length;
+    useEffect(() => {
+      fetchAlertData();
+    }, []);
+    return {alertData:alertData,delayCount,loading, error, refetch: fetchAlertData}
   }

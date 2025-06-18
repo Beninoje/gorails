@@ -1,16 +1,9 @@
-import { Image } from 'expo-image';
-import { Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import NormalHeader from '@/components/header/NormalHeader';
+import NormalHeader from '@/components/header/AlertHeader';
 import { useTripStore } from '@/store/useTripStore';
-import { ArrowRight, ChevronRight, Icon } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { ChevronRight } from 'lucide-react-native';
 
 export default function SettingsScreen() {
   const { setTrip, line, originName,destinationName } = useTripStore();

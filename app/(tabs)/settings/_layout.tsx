@@ -1,8 +1,10 @@
 import 'react-native-reanimated';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'react-native';
+import { useFetchAllAlerts } from '@/lib/fetch';
 
 export default function SettingsLayout() {
+  
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#15803d" /> 

@@ -6,7 +6,7 @@ type Props = {
   label:string;
 }
 
-const NormalHeader = ({label}: Props) => {
+const AlertHeader = ({label}: Props) => {
 
   return (
     <View className="w-full py-3 px-8 flex-row justify-center items-center">
@@ -17,4 +17,4 @@ const NormalHeader = ({label}: Props) => {
   )
 }
 
-export default NormalHeader
+export default AlertHeader

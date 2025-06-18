@@ -1,9 +1,7 @@
-import { useState } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
-import { Check } from 'lucide-react-native';
-import NormalHeader from '@/components/header/NormalHeader';
-import { useTripStore } from '@/store/useTripStore';
 import { STATION_BY_LINE } from '@/lib/utils';
+import { useTripStore } from '@/store/useTripStore';
+import { Check } from 'lucide-react-native';
+import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 
 
 export default function ChangeOrigin() {
