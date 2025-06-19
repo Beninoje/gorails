@@ -28,22 +28,20 @@ const TripCard = ({ trip,stops }: Props) => {
   return (
     <Pressable onPress={toggleExpanded}>
       <View className="flex-row items-center bg-zinc-800 rounded-xl py-3 px-5">
-    {/* Trip Info: 75% */}
-    <View className="w-3/4 flex-row justify-between gap-4">
-      <View className="flex-col">
-        <Text className="text-white text-2xl truncate">{trip.departure}</Text>
-        <Text className="text-zinc-500 text-lg">{trip.from}</Text>
+      <View className="w-3/4 flex-row justify-between gap-4">
+        <View className="flex-col">
+          <Text className="text-white text-2xl truncate">{trip.departure}</Text>
+          <Text className="text-zinc-500 text-lg">{trip.from}</Text>
+        </View>
+        <View className="flex-col">
+          <Text className="text-white text-2xl">{trip.arrival}</Text>
+          <Text className="text-zinc-500 text-lg">{trip.to}</Text>
+        </View>
       </View>
-      <View className="flex-col">
-        <Text className="text-white text-2xl">{trip.arrival}</Text>
-        <Text className="text-zinc-500 text-lg">{trip.to}</Text>
-      </View>
-    </View>
 
-    {/* Indicator: 25% */}
-    <View className="w-1/4 items-end">
-      <TripCardIndicator />
-    </View>
+      <View className="w-1/4 items-end">
+        <TripCardIndicator trip={trip}/>
+      </View>
   </View>
 
       {expanded && (
