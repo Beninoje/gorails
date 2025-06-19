@@ -1,7 +1,8 @@
 import { useTripStore } from '@/store/useTripStore';
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import { ArrowLeftRight, RefreshCcw } from 'lucide-react-native';
+import { ArrowLeftRight, ChevronDown, RefreshCcw } from 'lucide-react-native';
+import { IconSymbol } from '../ui/IconSymbol';
 type Props = {
   onSwitch: () => void;
   onRefresh: () => void;

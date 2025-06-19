@@ -1,4 +1,4 @@
-import { SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 
 import NormalHeader from '@/components/header/AlertHeader';
 import { useTripStore } from '@/store/useTripStore';

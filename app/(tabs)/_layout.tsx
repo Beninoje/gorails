@@ -44,7 +44,7 @@ export default function TabLayout() {
           title: 'Alerts',
           tabBarIcon: ({ color, size }) => (
             <View>
-              <Bell color={color} size={size} />
+              <IconSymbol color={color} name="bell" size={size} />
               {delayCount > 0 && (
                 <View
                   style={{

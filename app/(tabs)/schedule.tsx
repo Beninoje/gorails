@@ -1,5 +1,4 @@
-import { Image } from 'expo-image';
-import { ActivityIndicator, FlatList, Platform, Pressable, RefreshControl, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Platform, Pressable, RefreshControl, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTripStore } from '@/store/useTripStore';
 import { useFetchAllRides } from '@/lib/fetch';

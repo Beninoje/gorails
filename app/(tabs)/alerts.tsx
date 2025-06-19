@@ -26,15 +26,15 @@ const [refreshing, setRefreshing] = useState(false);
       <AlertHeader label='Alerts' />
       <View className="flex-1 bg-black p-4">
         <ScrollView 
-                  className="px-4" 
-                  contentContainerStyle={{ paddingBottom: 10}}
-                  refreshControl={
-                    <RefreshControl 
-                      refreshing={refreshing} 
-                      onRefresh={onRefresh} 
-                      tintColor="white" 
-                    />
-                  }>
+          className="" 
+          contentContainerStyle={{ paddingBottom: 10}}
+          refreshControl={
+            <RefreshControl 
+              refreshing={refreshing} 
+              onRefresh={onRefresh} 
+              tintColor="white" 
+            />
+          }>
                     {loading ? (
           <LoadingScreen/>
         ) : delayAlerts.length === 0 ? (
@@ -45,8 +45,7 @@ const [refreshing, setRefreshing] = useState(false);
           delayAlerts.map((alert, index) => (
             <View
               key={index}
-              className='mb-3 p-3 rounded-xl'
-              style={{ backgroundColor: alert.LineColour || '#222' }}
+              className='mb-3 p-3 rounded-xl bg-zinc-900'
             >
               <Text className='text-white font-semibold text-lg'>
                 {alert.CorridorName}
@@ -68,7 +67,7 @@ const [refreshing, setRefreshing] = useState(false);
           ))
         )}
 
-                  </ScrollView>
+        </ScrollView>
         
       </View>
     </SafeAreaView>
