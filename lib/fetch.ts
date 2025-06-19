@@ -66,8 +66,12 @@ export const fetchAPI = async (url: string) => {
                   duration: trip.duration,
                   railLines: railLines.map(line => ({
                     tripNumber: line.tripNumber,
-                    from: line.fromStopDisplay.replace(/ GO$/," "),
-                    to: line.toStopDisplay.replace(/ GO$/," "),
+                    from: line.fromStopDisplay
+                      .replace(/\s+GO(?=\s|\(|$)/i, '')
+                      .replace(/\s+\(VIA Station\)/i, ''),
+                    to: line.toStopDisplay
+                      .replace(/\s+GO(?=\s|\(|$)/i, '')
+                      .replace(/\s+\(VIA Station\)/i, ''),
                     departure: line.fromStopTime,
                     arrival: line.toStopTime,
                     stops: line.stops.map(stop => ({

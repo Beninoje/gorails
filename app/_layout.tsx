@@ -6,30 +6,47 @@ import "../global.css"
 import { StatusBar } from 'react-native';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import * as SplashScreen from "expo-splash-screen";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
 
+export default function RootLayout() {
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
 
   // Hide when fonts are loaded
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+  const onLayoutRootView = useCallback(() => {
+    if (appIsReady) {
+      SplashScreen.hide();
     }
-  }, [loaded]);
+  }, [appIsReady]);
 
-  if (!loaded) {
+  if (!appIsReady) {
     return null;
   }
 
+
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <BottomSheetModalProvider>
         <StatusBar barStyle="light-content" backgroundColor="black" />
         <Stack screenOptions={{ headerShown: false }}>
