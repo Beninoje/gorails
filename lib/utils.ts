@@ -29,6 +29,20 @@ export const formatCurrentTime = () => {
     return `${year}-${month}-${day}`;
   };
 
+  export function formatTripDuration(duration: string): string {
+    const [hoursStr, minutesStr] = duration.split(':');
+    const hours = parseInt(hoursStr, 10);
+    const minutes = parseInt(minutesStr, 10);
+  
+    let result = '';
+    if (hours > 0) result += `${hours}h `;
+    if (minutes > 0) result += `${minutes}m`;
+  
+    return result.trim();
+  }
+
+  
+
   export const STATION_BY_LINE = {
     'Barrie': [
       { name: 'Union Station', code: 'UN' },

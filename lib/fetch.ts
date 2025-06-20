@@ -52,13 +52,14 @@ export const fetchAPI = async (url: string) => {
             const data = await fetchAPI(url);
             
             const railTrips=[] as any;
-            data.trips.forEach(trip => {
+            data.trips
+            .filter((trip)=> trip.transfers === 0)
+            .forEach(trip => {
               const railLines = trip.lines.filter(line => 
                 line.transitType === 1 &&
                 line.fromStopCode === origin &&
                 line.toStopCode === destination
               );
-              
               if (railLines.length > 0) {
                 railTrips.push({
                   departureTime: trip.departureTimeDisplay,
@@ -78,7 +79,8 @@ export const fetchAPI = async (url: string) => {
                       name: stop.name,
                       code: stop.code,
                       time: stop.time
-                    }))
+                    })),
+                    transfers: false,
                   }))
                 });
               }
@@ -109,7 +111,7 @@ export const fetchAPI = async (url: string) => {
         setAlertData(trains);
 
       } catch (error) {
-        console.error('Failed to fetch GO Train data:', error);
+        console.error('Failed to fetch alert data:', error);
         setLoading(false);
         setError(error as string);
       }finally{
@@ -123,4 +125,30 @@ export const fetchAPI = async (url: string) => {
       fetchAlertData();
     }, []);
     return {alertData:alertData,delayCount,loading, error, refetch: fetchAlertData}
+  }
+  export const useFetchAllPlatforms = (url:string)=>{
+    const [platFormData, setPlatformData]= useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchPlatformData = async() => {
+      try {
+        setLoading(true);
+        const data = await fetchAPI(url);
+        const platForm = data?.NextService?.Lines ?? [];
+        setPlatformData(platForm);
+      } catch (error) {
+        console.error('Failed to fetch platform data:', error);
+        setLoading(false);
+        setError(error as string);
+      }finally{
+        setLoading(false)
+      }
+    }
+    
+    useEffect(() => {
+      fetchPlatformData();
+    }, []);
+
+    return {platFormData,loading, error, refetch: fetchPlatformData}
   }
